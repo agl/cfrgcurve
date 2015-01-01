@@ -186,7 +186,7 @@ Output: a generator point P = (X(P), Y(P)) of order oddDivisor
     </section>
 
     <section anchor="curves" title="Recommended Curves">
-      <t>For the ~128-bit security level, the prime 2^255-19 is recommended for performance over a wide-range of architectures. This prime is congruent to 3 mod 4 and the above procedure results in the following twisted Edwards curve, called <spanx style="verb">intermediate25519</spanx>:</t>
+      <t>For the ~128-bit security level, the prime 2^255-19 is recommended for performance over a wide-range of architectures. This prime is congruent to 1 mod 4 and the above procedure results in the following twisted Edwards curve, called <spanx style="verb">intermediate25519</spanx>:</t>
 
       <t>
         <list style="hanging">
