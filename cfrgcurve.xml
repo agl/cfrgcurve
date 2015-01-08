@@ -210,7 +210,7 @@ Output: a generator point P = (X(P), Y(P)) of order oddDivisor
         </list>
       </t>
 
-      <t>The d value in the this curve is much larger than the generated curve and this might slow down some implementations. If this is a problem then implementations are free to calculate on the original curve, with small d as the isogeny map can be merged into the affine transform without any performance impact.</t>
+      <t>The d value in this curve is much larger than the generated curve and this might slow down some implementations. If this is a problem then implementations are free to calculate on the original curve, with small d, as the isogeny map can be merged into the affine transform without any performance impact.</t>
 
       <t>The latter curve is isomorphic to a Montgomery curve defined by v^2 = u^3 + 486662u^2 + u where the maps are:</t>
       <figure align="center">
