@@ -299,7 +299,7 @@ Return (x_2, x_3)
         ]]></artwork>
       </figure>
 
-      <t>where mask(s_t) is the all-1 or all-0 word of the same length as x_2 and x_3, computed, e.g., as mask(s_t) = 1 - s_t. The latter version is often more efficient.</t>
+      <t>where mask(s_t) is the all-1 or all-0 word of the same length as x_2 and x_3, computed, e.g., as mask(s_t) = 0 - s_t. The latter version is often more efficient.</t>
 
       <section title="Diffie-Hellman protocol">
         <t>The DH function can be used in an ECDH protocol with the recommended curve as follows:</t>
