@@ -273,6 +273,8 @@ Return x_2 * (z_2^(p - 2))
         ]]></artwork>
       </figure>
 
+      <t>(TODO: Note the difference in the formula from Montgomery's original paper. See https://www.ietf.org/mail-archive/web/cfrg/current/msg05872.html.)</t>
+
       <t>In implementing this procedure, due to the existence of side-channels in commodity hardware, it is important that the pattern of memory accesses and jumps not depend on the values of any of the bits of s. It is also important that the arithmetic used not leak information about the integers modulo p (such as having b * c distinguishable from c * c).</t>
 
       <t>The cswap instruction SHOULD be implemented in constant time (independent of s_t) as follows:</t>
