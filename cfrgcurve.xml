@@ -50,7 +50,7 @@
     <section title="Introduction">
       <t>Since the initial standardization of elliptic curve cryptography (ECC) in <xref target="SEC1"/> there has been significant progress related to both efficiency and security of curves and implementations. Notable examples are algorithms protected against certain side-channel attacks, various 'special' prime shapes which allow faster modular arithmetic, and a larger set of curve models from which to choose. There is also concern in the community regarding the generation and potential weaknesses of the curves defined in <xref target="NIST"/>.</t>
 
-      <t>This memo describes a deterministic algorithm for generating elliptic curves for cryptography over a given prime field. The constraints in the generation process produce curves that support constant-time, exception-free scalar multiplications that are resistant to a wide range of side-channel attacks including timing and cache attacks, thereby offering high practical security in cryptographic applications. The deterministic algorithm operates without any input parameters that would permit manipulation of the resulting curves.. The selection between curve models is determined by choosing the curve form that supports the fastest (currently known) complete formulas for each modularity option of the underlying field prime. Specifically, the Edwards curve x^2 + y^2 = 1 + dx^2y^2 is used with primes p with p = 3 mod 4, and the twisted Edwards curve -x^2 + y^2 = 1 + dx^2y^2 is used for primes p with p = 1 mod 4.</t>
+      <t>This memo describes a deterministic algorithm for generating cryptographic elliptic curves over a given prime field. The constraints in the generation process produce curves that support constant-time, exception-free scalar multiplications that are resistant to a wide range of side-channel attacks including timing and cache attacks, thereby offering high practical security in cryptographic applications. The deterministic algorithm operates without any input parameters that would permit manipulation of the resulting curves. The selection between curve models is determined by choosing the curve form that supports the fastest (currently known) complete formulas for each modularity option of the underlying field prime. Specifically, the Edwards curve x^2 + y^2 = 1 + dx^2y^2 is used with primes p with p = 3 mod 4, and the twisted Edwards curve -x^2 + y^2 = 1 + dx^2y^2 is used when p = 1 mod 4.</t>
     </section>
 
     <section title="Requirements Language">
@@ -95,7 +95,7 @@
     </section>
 
     <section anchor="generation" title="Parameter Generation">
-      <t>This section describes the generation of the curve parameter, namely d, of the elliptic curve. The input to this process is p, the prime that defines the underlying field. The size of p determines the amount of work needed to compute a discrete logarithm in the elliptic curve group and choosing a precise p depends on many implementation concerns. The performance of the curve will be dominated by operations in GF(p) and thus carefully choosing a value that allows for easy reductions on the intended architecture is critical for performance. This document does not attempt to articulate all these considerations.</t>
+      <t>This section describes the generation of the curve parameter, namely d, of the elliptic curve. The input to this process is p, the prime that defines the underlying field. The size of p determines the amount of work needed to compute a discrete logarithm in the elliptic curve group and choosing a precise p depends on many implementation concerns. The performance of the curve will be dominated by operations in GF(p) and thus carefully choosing a value that allows for easy reductions on the intended architecture is critical. This document does not attempt to articulate all these considerations.</t>
 
       <section anchor="edwards-generation" title="Edwards Curves">
         <t>For p = 3 mod 4, the elliptic curve Ed in Edwards form is determined by the non-square element d from GF(p) (not equal to -1 or zero) with smallest absolute value such that #Ed(GF(p)) = cofactor * oddDivisor, #Ed'(GF(p)) = cofactor' * oddDivisor', cofactor = cofactor' = 4, and both subgroup orders oddDivisor and oddDivisor' are prime. In addition, care must be taken to ensure the MOV degree and CM discriminant requirements from <xref target="security-requirements" /> are met.</t>
@@ -153,7 +153,7 @@ Output: the parameter d defining the curve tEd
     </section>
 
     <section anchor="curves" title="Recommended Curves">
-      <t>For the ~128-bit security level, the prime 2^255-19 is recommended for performance over a wide-range of architectures. This prime is congruent to 1 mod 4 and the above procedure results in the following twisted Edwards curve, called <spanx style="verb">intermediate25519</spanx>:</t>
+      <t>For the ~128-bit security level, the prime 2^255-19 is recommended for performance on a wide-range of architectures. This prime is congruent to 1 mod 4 and the above procedure results in the following twisted Edwards curve, called <spanx style="verb">intermediate25519</spanx>:</t>
 
       <t>
         <list style="hanging">
@@ -192,7 +192,7 @@ Output: the parameter d defining the curve tEd
     </section>
 
     <section title="The curve25519 function">
-      <t>The <spanx style="verb">curve25519</spanx> function performs scalar multiplication on the Montgomery form of the above curve. (This is used when implementing Diffie-Hellman.) The function takes a scalar and a u-coordinate as inputs and produces a u-coordinate as output. Although the function works internally with integers, the inputs and outputs are 32-byte strings and specification defines their encoding.</t>
+      <t>The <spanx style="verb">curve25519</spanx> function performs scalar multiplication on the Montgomery form of the above curve. (This is used when implementing Diffie-Hellman.) The function takes a scalar and a u-coordinate as inputs and produces a u-coordinate as output. Although the function works internally with integers, the inputs and outputs are 32-byte strings and this specification defines their encoding.</t>
 
       <t>U-coordinates are elements of the underlying field GF(2^255-19) and are encoded as an array of bytes, u, in little-endian order such that u[0] + 256 * u[1] + 256^2 * u[2] + ... + 256^n * u[n] is congruent to the value modulo p and u[n] is minimal. When receiving such an array, implementations MUST mask the most-significant bit in the final byte. This is done to preserve compatibility with point formats which reserve the sign bit for use in other protocols and to increase resistance to implementation fingerprinting.</t>
 
@@ -201,7 +201,7 @@ Output: the parameter d defining the curve tEd
       <figure align="center">
         <artwork align="left"><![CDATA[
 def decodeLittleEndian(b):
-    return sum([b[i] * (1 << 8*i) for i in range(32)])
+    return sum([b[i] << 8*i for i in range(32)])
 
 def decodeUCoordinate(u):
     u_list = [ord(b) for b in u]
@@ -220,14 +220,14 @@ def encodeUCoordinate(u):
       <figure align="center">
         <artwork align="left"><![CDATA[
 def decodeScalar(k):
-    k_list = [ord(b) for b in f]
+    k_list = [ord(b) for b in k]
     k_list[0] &= 248
     k_list[31] &= 127
     k_list[31] |= 64
     return decodeLittleEndian(k_list)]]></artwork>
       </figure>
 
-      <t>To implement the <spanx style="verb">curve25519(k, u)</spanx> function (where <spanx style="verb">k</spanx> is the scalar and <spanx style="verb">u</spanx> is the u-coordinate) first decode <spanx style="verb">k</spanx> and <spanx style="verb">u</spanx> and then perform the following procedure, taken from <xref target="curve25519"/> based on formulas from <xref target="montgomery"/>. All calculations are performed in GF(p), i.e., they are performed modulo p. The constant a24 is (486662 - 2) / 4 = 121665.</t>
+      <t>To implement the <spanx style="verb">curve25519(k, u)</spanx> function (where <spanx style="verb">k</spanx> is the scalar and <spanx style="verb">u</spanx> is the u-coordinate) first decode <spanx style="verb">k</spanx> and <spanx style="verb">u</spanx> and then perform the following procedure, taken from <xref target="curve25519"/> and based on formulas from <xref target="montgomery"/>. All calculations are performed in GF(p), i.e., they are performed modulo p. The constant a24 is (486662 - 2) / 4 = 121665.</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
@@ -270,7 +270,7 @@ Return x_2 * (z_2^(p - 2))]]></artwork>
 
       <t>Finally, encode the resulting value as 32 bytes in little-endian order.</t>
 
-      <t>When implementing this procedure, due to the existence of side-channels in commodity hardware, it is important that the pattern of memory accesses and jumps not depend on the values of any of the bits of <spanx style="verb">k</spanx>. It is also important that the arithmetic used not leak information about the integers modulo p (such as having b*c distinguishable from c*c).</t>
+      <t>When implementing this procedure, due to the existence of side-channels in commodity hardware, it is important that the pattern of memory accesses and jumps not depend on the values of any of the bits of <spanx style="verb">k</spanx>. It is also important that the arithmetic used not leak information about the integers modulo p (such as having b*c be distinguishable from c*c).</t>
 
       <t>The cswap instruction SHOULD be implemented in constant time (independent of <spanx style="verb">swap</spanx>) as follows:</t>
 
@@ -333,7 +333,7 @@ Output U-coordinate:
 
       <t>Alice computes curve25519(f, K_B); Bob computes curve25519(g, K_A) using their generated values and the received input.</t>
 
-      <t>Both of them now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Alice and Bob can then use a key-derivation function, such as hashing K, to compute a key.</t>
+      <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Alice and Bob can then use a key-derivation function, such as hashing K, to compute a key.</t>
 
       <t>Note that this Diffie-Hellman protocol is not contributory, e.g. if the u-coordinate is zero then the output will always be zero. A contributory Diffie-Hellman function would ensure that the output was unpredictable no matter what the peer's input. This is not a problem for the vast majority of cases but, if a contributory function is specifically required, then <spanx style="verb">curve25519</spanx> should not be used.</t>
 
@@ -346,7 +346,7 @@ Alice's public key, curve25519(f, 9):
   8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a
 Bob's private key, g:
   5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb
-Bob's public key, DH(g, 9):
+Bob's public key, curve25519(g, 9):
   de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f
 Their shared secret, K:
   4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742]]></artwork>
