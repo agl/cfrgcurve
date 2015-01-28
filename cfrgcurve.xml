@@ -10,7 +10,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="info" docName="draft-irtf-cfrg-curves-00" ipr="trust200902">
+<rfc category="info" docName="draft-irtf-cfrg-curves-01" ipr="trust200902">
   <front>
     <title abbrev="cfrgcurve">Elliptic Curves for Security</title>
 
@@ -25,6 +25,35 @@
           <country>US</country>
         </postal>
         <email>agl@google.com</email>
+      </address>
+    </author>
+
+    <author fullname="Rich Salz" initials="R." surname="Salz">
+      <organization>Akamai Technologies</organization>
+      <address>
+        <postal>
+          <street>8 Cambridge Center</street>
+          <city>Cambridge</city>
+          <region>MA</region>
+          <code>02142</code>
+          <country>US</country>
+        </postal>
+        <email>rsalz@akamai.com</email>
+      </address>
+    </author>
+
+    <author fullname="Sean Turner" initials="S." surname="Turner">
+      <organization>IECA, Inc.</organization>
+      <address>
+        <postal>
+          <street>3057 Nutley Street</street>
+          <street>Suite 106</street>
+          <city>Fairfax</city>
+          <region>VA</region>
+          <code>22031</code>
+          <country>US</country>
+        </postal>
+        <email>turners@ieca.com</email>
       </address>
     </author>
 
@@ -43,10 +72,6 @@
   </front>
 
   <middle>
-    <section title="Note on authorship">
-      <t>This document merges <spanx style="verb">draft-black-rpgecc-01</spanx> (by Benjamin Black, Joppe W. Bos, Craig Costello, Patrick Longa and Michael Naehrig) and <spanx style="verb">draft-turner-thecurve25519function-01</spanx> (by Watson Ladd, Rich Salz and Sean Turner). They wrote the text and figures, but are not listed as authors, because they may not support this document. Nonetheless, they deserve all credit for its contents.</t>
-    </section>
-
     <section title="Introduction">
       <t>Since the initial standardization of elliptic curve cryptography (ECC) in <xref target="SEC1"/> there has been significant progress related to both efficiency and security of curves and implementations. Notable examples are algorithms protected against certain side-channel attacks, various 'special' prime shapes which allow faster modular arithmetic, and a larger set of curve models from which to choose. There is also concern in the community regarding the generation and potential weaknesses of the curves defined in <xref target="NIST"/>.</t>
 
@@ -352,6 +377,12 @@ Their shared secret, K:
   4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742]]></artwork>
         </figure>
       </section>
+    </section>
+
+    <section title="Acknowledgements">
+      <t>This document merges <spanx style="verb">draft-black-rpgecc-01</spanx> and <spanx style="verb">draft-turner-thecurve25519function-01</spanx>. The following authors of those documents wrote much of the text and figures but are not listed as authors on this document: Benjamin Black, Joppe W. Bos, Craig Costello, Patrick Longa, Michael Naehrig and Watson Ladd.</t>
+
+      <t>The authors would also like to thank Tanja Lange and Rene Struik for their reviews.</t>
     </section>
   </middle>
   <back>
