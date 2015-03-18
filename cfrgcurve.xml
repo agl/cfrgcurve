@@ -57,7 +57,7 @@
       </address>
     </author>
 
-    <date month="January" year="2015" />
+    <date month="March" year="2015" />
 
     <area>General</area>
     <workgroup>CFRG</workgroup>
@@ -67,7 +67,7 @@
     <keyword>ecc</keyword>
 
     <abstract>
-      <t>This memo describes an algorithm for deterministically generating parameters for elliptic curves over prime fields offering high practical security in cryptographic applications, including Transport Layer Security (TLS) and X.509 certificates. It also specifies a specific curve at the ~128-bit security level.</t>
+      <t>This memo describes an algorithm for deterministically generating parameters for elliptic curves over prime fields offering high practical security in cryptographic applications, including Transport Layer Security (TLS) and X.509 certificates. It also specifies a specific curve at the ~128-bit security level and a specific curve at the ~224-bit security level.</t>
     </abstract>
   </front>
 
@@ -178,6 +178,7 @@ Output: the parameter d defining the curve tEd
     </section>
 
     <section anchor="curves" title="Recommended Curves">
+    <section anchor="curve25519curve" title="Curve25519">
       <t>For the ~128-bit security level, the prime 2^255-19 is recommended for performance on a wide-range of architectures. This prime is congruent to 1 mod 4 and the above procedure results in the following twisted Edwards curve, called <spanx style="verb">intermediate25519</spanx>:</t>
 
       <t>
@@ -214,45 +215,93 @@ Output: the parameter d defining the curve tEd
       <t>The base point maps onto the Montgomery curve such that u = 9, v = 14781619447589544791020593568409986887264606134616475288964881837755586237401.</t>
 
       <t>The Montgomery curve defined here is equal to the one defined in <xref target="curve25519"/> and the isomorphic twisted Edwards curve is equal to the one defined in <xref target="ed25519"/>.</t>
+      
+      </section>
+      <section anchor="curve448curve" title="Ed448-Goldilocks">
+      <t>For the ~224-bit security level, the prime 2^448-2^224-1 is recommended for performance on a wide-range of architectures. This prime is congruent to 3 mod 4 and the above procedure results in the following Edwards curve, called <spanx style="verb">Ed448-Goldilocks</spanx>:</t>
+
+      <t>
+        <list style="hanging">
+          <t hangText="p">2^448-2^224-1</t>
+          <t hangText="d">-39081</t>
+          <t hangText="order">2^446 - 0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d</t>
+          <t hangText="cofactor">4</t>
+        </list>
+      </t>
+
+      <t>In order to be match the ~128-bit curve, the recommended curve for Diffie-Hellman protocols is an isogeny of this curve.  It is a twisted Edwards curve, so care must be taken when using it in Edwards form.</t>
+
+      <t>
+        <list style="hanging">
+          <t hangText="p">2^448-2^224-1</t>
+          <t hangText="d">4182084436117729939046784828815710036336506135247868896563602197680 \
+              37189076436080174990928822274691375311108563877945686966122765953216</t>
+          <t hangText="order">2^446 - 0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d</t>
+          <t hangText="cofactor">4</t>
+          <t hangText="X(P)">6392678610083426225295192725815276014287868533090320510153814389097 \
+              01314923760525190444529993827164796662812046300017303133801860285159</t>
+          <t hangText="Y(P)">4845591495304045936995492052586696895690942404582120401876601327870 \
+              74885444487181790930922465784363953392589641229091574035665345576960</t>
+        </list>
+      </t>
+
+      <t>The d value in this curve is much larger than the generated curve and this might slow down some implementations. If this is a problem then implementations are free to calculate on the original curve, with small d, as the isogeny map can be merged into the affine transform without any performance impact.  Alternatively, implementations can calculate on the twisted Edwards curve with d=-39082, which is also an isogeny of Ed448-Goldilocks.</t>
+
+      <t>The latter curve is isomorphic to a Montgomery curve defined by v^2 = u^3 + 156326u^2 + u where the maps are:</t>
+      <figure align="center">
+        <artwork align="left"><![CDATA[
+(u, v) = ((1+y)/(1-y), sqrt(-156328)*u/x)
+(x, y) = (sqrt(-156328)*u/v, (u-1)/(u+1)]]></artwork>
+      </figure>
+
+      <t>The base point maps onto the Montgomery curve such that u = 5,
+          v = 3552939267855681752641275020637833348089763993877142718318808984351 \ 69088786967410002932673765864550910142774147268105838985595290606362.</t>
+    </section>
     </section>
 
-    <section title="The curve25519 function">
-      <t>The <spanx style="verb">curve25519</spanx> function performs scalar multiplication on the Montgomery form of the above curve. (This is used when implementing Diffie-Hellman.) The function takes a scalar and a u-coordinate as inputs and produces a u-coordinate as output. Although the function works internally with integers, the inputs and outputs are 32-byte strings and this specification defines their encoding.</t>
+    <section title="The curve25519 and curve448 functions">
+      <t>The <spanx style="verb">curve25519</spanx> and <spanx style="verb">curve448</spanx> functions performs scalar multiplication on the Montgomery form of the above curves. (This is used when implementing Diffie-Hellman.) The functions take a scalar and a u-coordinate as inputs and produce a u-coordinate as output. Although the functions work internally with integers, the inputs and outputs are 32-byte strings and this specification defines their encoding.</t>
 
-      <t>U-coordinates are elements of the underlying field GF(2^255-19) and are encoded as an array of bytes, u, in little-endian order such that u[0] + 256 * u[1] + 256^2 * u[2] + ... + 256^n * u[n] is congruent to the value modulo p and u[n] is minimal. When receiving such an array, implementations MUST mask the most-significant bit in the final byte. This is done to preserve compatibility with point formats which reserve the sign bit for use in other protocols and to increase resistance to implementation fingerprinting.</t>
+      <t>U-coordinates are elements of the underlying field GF(2^255-19) or GF(2^448-2^224-1) and are encoded as an array of bytes, u, in little-endian order such that u[0] + 256 * u[1] + 256^2 * u[2] + ... + 256^n * u[n] is congruent to the value modulo p and u[n] is minimal. When receiving such an array, implementations of curve25519 (but not curve448) MUST mask the most-significant bit in the final byte. This is done to preserve compatibility with point formats which reserve the sign bit for use in other protocols and to increase resistance to implementation fingerprinting.</t>
 
-      <t>For example, the following functions implement this in Python, although the Python code is not intended to be performant nor side-channel free:</t>
+      <t>For example, the following functions implement this in Python, although the Python code is not intended to be performant nor side-channel free.  Here the "bits" parameter should be set to 255 for curve25519 and 448 for curve448:</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
-def decodeLittleEndian(b):
-    return sum([b[i] << 8*i for i in range(32)])
+def decodeLittleEndian(b,bits):
+    return sum([b[i] << 8*i for i in range((bits+7)/8)])
 
-def decodeUCoordinate(u):
+def decodeUCoordinate(u,bits):
     u_list = [ord(b) for b in u]
-    u_list[31] &= 0x7f
-    return decodeLittleEndian(u_list)
+    if bits % 8: u_list[-1] &= (1<<(bits%8))-1
+    return decodeLittleEndian(u_list,bits)
 
-def encodeUCoordinate(u):
+def encodeUCoordinate(u,bits):
     u = u % p
-    return ''.join([chr((u >> 8*i) & 0xff) for i in range(32)])]]></artwork>
+    return ''.join([chr((u >> 8*i) & 0xff) for i in range((bits+7)/8)])]]></artwork>
       </figure>
 
       <t>(EDITORS NOTE: draft-turner-thecurve25519function also says "Implementations MUST reject numbers in the range [2^255-19, 2^255-1], inclusive." but I'm not aware of any implementations that do so.)</t>
 
-      <t>Scalars are assumed to be randomly generated bytes. In order to decode 32 bytes into an integer scalar, set the three least significant bits of the first byte and the most significant bit of the last to zero, set the second most significant bit of the last byte to 1 and, finally, decode as little-endian. This means that resulting integer is of the form 2^254 + 8 * {0, 1, ..., 2^(251) - 1}.</t>
+      <t>Scalars are assumed to be randomly generated bytes. For curve25519, in order to decode 32 bytes into an integer scalar, set the three least significant bits of the first byte and the most significant bit of the last to zero, set the second most significant bit of the last byte to 1 and, finally, decode as little-endian. This means that resulting integer is of the form 2^254 + 8 * {0, 1, ..., 2^(251) - 1}.  Likewise, for curve448, set the two least significant bits of the first byte to 0, and the most significant bit of the last byte to 1.  This means that the resulting integer is of the form 2^447 + 4 * {0, 1, ..., 2^(445) - 1}.</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
-def decodeScalar(k):
+def decodeScalar25519(k):
     k_list = [ord(b) for b in k]
     k_list[0] &= 248
     k_list[31] &= 127
     k_list[31] |= 64
-    return decodeLittleEndian(k_list)]]></artwork>
+    return decodeLittleEndian(k_list,255)
+    
+def decodeScalar448(k):
+    k_list = [ord(b) for b in k]
+    k_list[0] &= 252
+    k_list[55] |= 128
+    return decodeLittleEndian(k_list,448)]]></artwork>
       </figure>
 
-      <t>To implement the <spanx style="verb">curve25519(k, u)</spanx> function (where <spanx style="verb">k</spanx> is the scalar and <spanx style="verb">u</spanx> is the u-coordinate) first decode <spanx style="verb">k</spanx> and <spanx style="verb">u</spanx> and then perform the following procedure, taken from <xref target="curve25519"/> and based on formulas from <xref target="montgomery"/>. All calculations are performed in GF(p), i.e., they are performed modulo p. The constant a24 is (486662 - 2) / 4 = 121665.</t>
+      <t>To implement the <spanx style="verb">curve25519(k, u)</spanx> and <spanx style="verb">curve448(k, u)</spanx> functions (where <spanx style="verb">k</spanx> is the scalar and <spanx style="verb">u</spanx> is the u-coordinate) first decode <spanx style="verb">k</spanx> and <spanx style="verb">u</spanx> and then perform the following procedure, taken from <xref target="curve25519"/> and based on formulas from <xref target="montgomery"/>. All calculations are performed in GF(p), i.e., they are performed modulo p. The constant a24 is (486662 - 2) / 4 = 121665 for curve25519, and (156326 - 2) / 4 = 39081 for curve448.</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
@@ -263,7 +312,7 @@ x_3 = u
 z_3 = 1
 swap = 0
 
-For t = 254 down to 0:
+For t = bits-1 down to 0:
     k_t = (k >> t) & 1
     swap ^= k_t
     // Conditional swap; see text below.
@@ -293,7 +342,7 @@ Return x_2 * (z_2^(p - 2))]]></artwork>
 
       <t>(TODO: Note the difference in the formula from Montgomery's original paper. See https://www.ietf.org/mail-archive/web/cfrg/current/msg05872.html.)</t>
 
-      <t>Finally, encode the resulting value as 32 bytes in little-endian order.</t>
+      <t>Finally, encode the resulting value as 32 or 56 bytes in little-endian order.</t>
 
       <t>When implementing this procedure, due to the existence of side-channels in commodity hardware, it is important that the pattern of memory accesses and jumps not depend on the values of any of the bits of <spanx style="verb">k</spanx>. It is also important that the arithmetic used not leak information about the integers modulo p (such as having b*c be distinguishable from c*c).</t>
 
@@ -319,11 +368,13 @@ cswap(swap, x_2, x_3):
       Return (x_2, x_3)]]></artwork>
       </figure>
 
-      <t>where <spanx style="verb">mask(swap)</spanx> is the all-1 or all-0 word of the same length as x_2 and x_3, computed, e.g., as mask(swap) = 0 - swap. The latter version is often more efficient.</t>
+      <t>where <spanx style="verb">mask(swap)</spanx> is the all-1 or all-0 word of the same length as x_2 and x_3, computed, e.g., as mask(swap) = 1 - swap. The latter version is often more efficient.</t>
 
       <section title="Test vectors">
         <figure align="center">
           <artwork align="left"><![CDATA[
+curve25519:
+
 Input scalar:
   a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4
 Input scalar as a number (base 10):
@@ -344,7 +395,41 @@ Input U-coordinate:
 Input U-coordinate as a number:
   8883857351183929894090759386610649319417338800022198945255395922347792736741
 Output U-coordinate:
-  95cbde9476e8907d7aade45cb4b873f88b595a68799fa152e6f8f7647aac7957]]></artwork>
+  95cbde9476e8907d7aade45cb4b873f88b595a68799fa152e6f8f7647aac7957
+
+curve448:
+
+Input scalar:
+  3d262fddf9ec8e88495266fea19a34d28882acef045104d0d1aae121
+  700a779c984c24f8cdd78fbff44943eba368f54b29259a4f1c600ad3
+Input scalar as a number (base 10):
+  5991891753738964027837560161452132561572308560850261299268914594686 \
+  22403380588640249457727683869421921443004045221642549886377526240828
+Input U-coordinate:
+  06fce640fa3487bfda5f6cf2d5263f8aad88334cbd07437f020f08f9
+  814dc031ddbdc38c19c6da2583fa5429db94ada18aa7a7fb4ef8a086
+Input U-coordinate as a number:
+  3822399108141073301162299612348993770314163652405713251483465559224 \
+  38025162094455820962429142971339584360034337310079791515452463053830
+Output U-coordinate:
+  ce3e4ff95a60dc6697da1db1d85e6afbdf79b50a2412d7546d5f239f
+  e14fbaadeb445fc66a01b0779d98223961111e21766282f73dd96b6f
+
+Input scalar:
+  203d494428b8399352665ddca42f9de8fef600908e0d461cb021f8c5
+  38345dd77c3e4806e25f46d3315c44e0a5b4371282dd2c8d5be3095f
+Input scalar as a number (base 10):
+  6332543359069705927792594815348623723825251552520289610564040013321 \
+  22152890562527156973881968934311400345568203929409663925541994577184
+Input U-coordinate:
+  0fbcc2f993cd56d3305b0b7d9e55d4c1a8fb5dbb52f8e9a1e9b6201b
+  165d015894e56c4d3570bee52fe205e28a78b91cdfbde71ce8d157db
+Input U-coordinate as a number:
+  6227617977583254444629220684312341806495903900248112997616251537672 \
+  28042600197997696167956134770744996690267634159427999832340166786063
+Output U-coordinate:
+  884a02576239ff7a2f2f63b2db6a9ff37047ac13568e1e30fe63c4a7
+  ad1b3ee3a5700df34321d62077e63633c575c1c954514e99da7c179d]]></artwork>
         </figure>
       </section>
     </section>
@@ -360,11 +445,13 @@ Output U-coordinate:
 
       <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Alice and Bob can then use a key-derivation function, such as hashing K, to compute a key.</t>
 
-      <t>Note that this Diffie-Hellman protocol is not contributory, e.g. if the u-coordinate is zero then the output will always be zero. A contributory Diffie-Hellman function would ensure that the output was unpredictable no matter what the peer's input. This is not a problem for the vast majority of cases but, if a contributory function is specifically required, then <spanx style="verb">curve25519</spanx> should not be used.</t>
+      <t>Note that this Diffie-Hellman protocol is not contributory, e.g. if the u-coordinate is zero then the output will always be zero. A contributory Diffie-Hellman function would ensure that the output was unpredictable no matter what the peer's input. This is not a problem for the majority of cases.  If a contributory function is specifically required, then <spanx style="verb">curve25519</spanx> and <spanx style="verb">curve448</spanx> functions SHOULD NOT be used.  If they are used when a contributory function is required, the implementation MUST signal an error if the output consists entirely of zero bytes.</t>
 
       <section title="Test vectors">
         <figure align="center">
           <artwork align="left"><![CDATA[
+curve25519:
+
 Alice's private key, f:
   77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a
 Alice's public key, curve25519(f, 9):
@@ -374,13 +461,32 @@ Bob's private key, g:
 Bob's public key, curve25519(g, 9):
   de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f
 Their shared secret, K:
-  4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742]]></artwork>
+  4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742
+  
+
+curve448:
+  
+Alice's private key, f:
+  9a8f4925d1519f5775cf46b04b5800d4ee9ee8bae8bc5565d498c28d
+  d9c9baf574a9419744897391006382a6f127ab1d9ac2d8c0a598726b
+Alice's public key, curve448(f, 5):
+  9b08f7cc31b7e3e67d22d5aea121074a273bd2b83de09c63faa73d2c
+  22c5d9bbc836647241d953d40c5b12da88120d53177f80e532c41fa0
+Bob's private key, g:
+  1c306a7ac2a0e2e0990b294470cba339e6453772b075811d8fad0d1d
+  6927c120bb5ee8972b0d3e21374c9c921b09d1b0366f10b65173992d
+Bob's public key, curve448(g, 5):
+  3eb7a829b0cd20f5bcfc0b599b6feccf6da4627107bdb0d4f345b430
+  27d8b972fc3e34fb4232a13ca706dcb57aec3dae07bdc1c67bf33609
+Their shared secret, K:
+  fe2d52f1ca113e5441538037dc4a9d4cb381035fb4a990ac50ac4333
+  63dc072301d1d4f2e82883b35103be96068c11e7c84b8fff74bb6ab0]]></artwork>
         </figure>
       </section>
     </section>
 
     <section title="Acknowledgements">
-      <t>This document merges <spanx style="verb">draft-black-rpgecc-01</spanx> and <spanx style="verb">draft-turner-thecurve25519function-01</spanx>. The following authors of those documents wrote much of the text and figures but are not listed as authors on this document: Benjamin Black, Joppe W. Bos, Craig Costello, Patrick Longa, Michael Naehrig and Watson Ladd.</t>
+      <t>This document merges <spanx style="verb">draft-black-rpgecc-01</spanx> and <spanx style="verb">draft-turner-thecurve25519function-01</spanx>. The following authors of those documents wrote much of the text and figures but are not listed as authors on this document: Benjamin Black, Joppe W. Bos, Craig Costello, Mike Hamburg, Patrick Longa, Michael Naehrig and Watson Ladd.</t>
 
       <t>The authors would also like to thank Tanja Lange and Rene Struik for their reviews.</t>
     </section>
