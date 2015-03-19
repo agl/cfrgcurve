@@ -443,9 +443,9 @@ Output U-coordinate:
 
       <t>Alice computes curve25519(f, K_B); Bob computes curve25519(g, K_A) using their generated values and the received input.</t>
 
-      <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Alice and Bob can then use a key-derivation function, such as hashing K, to compute a key.</t>
+      <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Both SHOULD check, in constant time, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function, such as hashing K, to compute a key.</t>
 
-      <t>Note that this Diffie-Hellman protocol is not contributory, e.g. if the u-coordinate is zero then the output will always be zero. A contributory Diffie-Hellman function would ensure that the output was unpredictable no matter what the peer's input. This is not a problem for the majority of cases.  If a contributory function is specifically required, then <spanx style="verb">curve25519</spanx> and <spanx style="verb">curve448</spanx> functions SHOULD NOT be used.  If they are used when a contributory function is required, the implementation MUST signal an error if the output consists entirely of zero bytes.</t>
+      <t>The check for the all-zero value results from the fact that the curve25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. This is not a problem in some protocols, but nor should any honest party in a Diffie-Hellman protocol send such a point.</t>
 
       <section title="Test vectors">
         <figure align="center">
