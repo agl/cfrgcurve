@@ -263,7 +263,7 @@ def findBasepoint(prime, A):
   (x, y) = (sqrt(-156328)*u/v, (u-1)/(u+1)]]></artwork>
         </figure>
 
-        <t>Since twisted Edwards curves with a=-1 do not have complete formulas with this prime, that curve is isogenous to the following Edward's curve x^2 + y^2 = 1 - d*x^2*y^2, called <spanx style="verb">Ed448-Goldilocks</spanx>:</t>
+        <t>Since twisted Edwards curves with a=-1 do not have complete formulas with this prime, that curve is isogenous to the following Edward's curve x^2 + y^2 = 1 + d*x^2*y^2, called <spanx style="verb">Ed448-Goldilocks</spanx>:</t>
 
         <t>
           <list style="hanging">
@@ -274,7 +274,12 @@ def findBasepoint(prime, A):
           </list>
         </t>
 
-        <!-- What are the isogeny maps? -->
+        <t>The 4-isogeny maps between the Montgomery curve and the Edward's curve are:</t>
+        <figure align="center">
+          <artwork align="left"><![CDATA[
+  (u, v) = (x^2/y^2, (-x^3 - x*y^2 + 2*x)/y^3)
+  (x, y) = ((4*u^2*v - 4*v)/(u^4 - 2*u^2 + 4*v^2 + 1), (-u^5 + 2*u^3 + 4*u*v^2 - u)/(-u^5 + 2*u^2*v^2 + 2*u^3 + 2*v^2 - u))]]></artwork>
+        </figure>
       </section>
     </section>
 
@@ -313,7 +318,7 @@ def decodeScalar25519(k):
     k_list[31] &= 127
     k_list[31] |= 64
     return decodeLittleEndian(k_list,255)
-    
+
 def decodeScalar448(k):
     k_list = [ord(b) for b in k]
     k_list[0] &= 252
