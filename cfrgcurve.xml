@@ -10,7 +10,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="info" docName="draft-irtf-cfrg-curves-01" ipr="trust200902">
+<rfc category="info" docName="draft-irtf-cfrg-curves-02" ipr="trust200902">
   <front>
     <title abbrev="cfrgcurve">Elliptic Curves for Security</title>
 
@@ -278,7 +278,7 @@ def findBasepoint(prime, A):
         <t>The 4-isogeny maps between the Montgomery curve and the Edward's curve are:</t>
         <figure align="center">
           <artwork align="left"><![CDATA[
-  (u, v) = (x^2/y^2, (2 x^2 - y^2)*x/y^3)
+  (u, v) = (x^2/y^2, (2 - x^2 - y^2)*x/y^3)
   (x, y) = (4*v*(u^2 - 1)/(u^4 - 2*u^2 + 4*v^2 + 1), (u^5 - 2*u^3 - 4*u*v^2 + u)/(u^5 - 2*u^2*v^2 - 2*u^3 - 2*v^2 + u))]]></artwork>
         </figure>
       </section>
