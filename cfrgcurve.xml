@@ -394,7 +394,7 @@ cswap(swap, x_2, x_3):
       Return (x_2, x_3)]]></artwork>
       </figure>
 
-      <t>where <spanx style="verb">mask(swap)</spanx> is the all-1 or all-0 word of the same length as x_2 and x_3, computed, e.g., as mask(swap) = 1 - swap. The latter version is often more efficient.</t>
+      <t>where <spanx style="verb">mask(swap)</spanx> is the all-1 or all-0 word of the same length as x_2 and x_3, computed, e.g., as mask(swap) = 0 - swap. The latter version is often more efficient.</t>
 
       <section title="Test vectors">
         <figure align="center">
