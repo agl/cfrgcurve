@@ -28,17 +28,17 @@
       </address>
     </author>
 
-    <author fullname="Rich Salz" initials="R." surname="Salz">
-      <organization>Akamai Technologies</organization>
+    <author fullname="Mike Hamburg" initials="M." surname="Hamburg">
+      <organization>Cryptography Research</organization>
       <address>
         <postal>
-          <street>8 Cambridge Center</street>
-          <city>Cambridge</city>
-          <region>MA</region>
-          <code>02142</code>
+          <street>425 Market Street, 11th Floor</street>
+          <city>San Francisco</city>
+          <region>CA</region>
+          <code>94105</code>
           <country>US</country>
         </postal>
-        <email>rsalz@akamai.com</email>
+        <email>mike@shiftleft.org</email>
       </address>
     </author>
 
