@@ -29,7 +29,7 @@
     </author>
 
     <author fullname="Mike Hamburg" initials="M." surname="Hamburg">
-      <organization>Cryptography Research</organization>
+      <organization>Rambus Cryptography Research</organization>
       <address>
         <postal>
           <street>425 Market Street, 11th Floor</street>
@@ -104,8 +104,8 @@
         <list style="hanging">
           <t hangText="p">Denotes the prime number defining the underlying field.</t>
           <t hangText="GF(p)">The finite field with p elements.</t>
-          <t hangText="A">An element in the finite field GF(p), not equal to -1 or zero.</t>
-          <t hangText="d">An element in the finite field GF(p), not equal to -1 or zero.</t>
+          <t hangText="A">An element in the finite field GF(p), not equal to -2 or 2.</t>
+          <t hangText="d">An element in the finite field GF(p), not equal to 0 or 1.</t>
           <t hangText="P">A generator point defined over GF(p) of prime order.</t>
           <t hangText="X(P)">The x-coordinate of the elliptic curve point P on a (twisted) Edwards curve.</t>
           <t hangText="Y(P)">The y-coordinate of the elliptic curve point P on a (twisted) Edwards curve.</t>
@@ -114,20 +114,20 @@
     </section>
 
     <section anchor="generation" title="Parameter Generation">
-      <t>This section describes the generation of the curve parameter, namely A, of the Montgomery curve y^2 = x^3 + Ax^2 + x. The input to this process is p, the prime that defines the underlying field. The size of p determines the amount of work needed to compute a discrete logarithm in the elliptic curve group and choosing a precise p depends on many implementation concerns. The performance of the curve will be dominated by operations in GF(p) and thus carefully choosing a value that allows for easy reductions on the intended architecture is critical. This document does not attempt to articulate all these considerations.</t>
+      <t>This section describes the generation of the curve parameter, namely A, of the Montgomery curve y^2 = x^3 + Ax^2 + x. The input to this process is p, the prime that defines the underlying field. The size of p determines the amount of work needed to compute a discrete logarithm in the elliptic curve group, and choosing a precise p depends on many implementation concerns. The performance of the curve will be dominated by operations in GF(p), so carefully choosing a value that allows for easy reductions on the intended architecture is critical. This document does not attempt to articulate all these considerations.</t>
 
       <t>The value (A-2)/4 is used in several of the elliptic curve point arithmetic formulas.  For simplicity and performance reasons, it is beneficial to make this constant small, i.e. to choose A so that (A-2) is a small integer which is divisible by four.</t>
 
       <section title="p = 1 mod 4">
-        <t>For primes congruent to 1 mod 4, the minimal cofactors of the curve and its twist are either {4, 8} or {8, 4}. We choose a curve with the latter cofactors so that any algorithms that take the cofactor into account don't have to worry about checking for points on the twist, because the twist cofactor is larger.</t>
+        <t>For primes congruent to 1 mod 4, the minimal cofactors of the curve and its twist are either {4, 8} or {8, 4}. We choose a curve with the latter cofactors so that any algorithms that take the cofactor into account don't have to worry about checking for points on the twist, because the twist cofactor is smaller.</t>
 
-        <t>To generate the Montgomery curve we find the minimal, positive A value such (A-2) is divisible by four and where the cofactors are as desired. The <spanx style="verb">find1Mod4</spanx> function in the following Sage script returns this value given p:</t>
+        <t>To generate the Montgomery curve we find the minimal, positive A value, such that A &gt; 2 and (A-2) is divisible by four and where the cofactors are as desired. The <spanx style="verb">find1Mod4</spanx> function in the following Sage script returns this value given p:</t>
         <figure align="center" title="Generating a curve where p = 1 mod 4">
           <artwork align="left"><![CDATA[
 def findCurve(prime, curveCofactor, twistCofactor):
     F = GF(prime)
 
-    for A in xrange(1, 1e9):
+    for A in xrange(3, 1e9):
         if (A-2) % 4 != 0:
           continue
 
@@ -151,7 +151,7 @@ def find1Mod4(prime):
       </section>
 
       <section title="p = 3 mod 4">
-        <t>For a prime congruent to 3 mod 4, both the curve and twist cofactors can be 4 and this is minimal. Thus we choose the curve with these cofactors and minimal, positive A such that (A-2) is divisible by four. The <spanx style="verb">find3Mod4</spanx> function in the following Sage script returns this value given p:</t>
+        <t>For a prime congruent to 3 mod 4, both the curve and twist cofactors can be 4 and this is minimal. Thus we choose the curve with these cofactors and minimal, positive A such that A &gt; 2 and (A-2) is divisible by four. The <spanx style="verb">find3Mod4</spanx> function in the following Sage script returns this value given p:</t>
 
         <figure align="center" title="Generating a curve where p = 3 mod 4">
           <artwork align="left"><![CDATA[
