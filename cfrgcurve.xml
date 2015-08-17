@@ -134,8 +134,8 @@
         <t>The isomorphism maps are:</t>
         <figure align="center">
           <artwork align="left"><![CDATA[
-  (u, v) = ((1+y)/(1-y), sqrt(-1)*sqrt(486664)*u/x)
-  (x, y) = (sqrt(-1)*sqrt(486664)*u/v, (u-1)/(u+1)]]></artwork>
+  (u, v) = ((1+y)/(1-y), sqrt(-486664)*u/x)
+  (x, y) = (sqrt(-486664)*u/v, (u-1)/(u+1)]]></artwork>
         </figure>
 
         <t>The Montgomery curve defined here is equal to the one defined in <xref target="curve25519"/> and the isomorphic twisted Edwards curve is equal to the one defined in <xref target="ed25519"/>.</t>
@@ -154,22 +154,18 @@
         </t>
 
         <t>The base point is u = 5, v =
-          3552939267855681752641275020637833348089763993877142718318808984351 \
-          69088786967410002932673765864550910142774147268105838985595290606362.</t>
+          355293926785568175264127502063783334808976399387714271831880898435169088786967410002932673765864550910142774147268105838985595290606362.</t>
 
         <t>This curve is isomorphic to the Edwards curve x^2 + y^2 = 1 + d*x^2*y^2 where:</t>
 
         <t>
           <list style="hanging">
             <t hangText="p">2^448-2^224-1</t>
-            <t hangText="d">6119758507445291761604232209655533175432196968710166263289689364150 \
-                87860042636474891785599283666020414768678979989378147065462815545017</t>
+            <t hangText="d">611975850744529176160423220965553317543219696871016626328968936415087860042636474891785599283666020414768678979989378147065462815545017</t>
             <t hangText="order">2^446 - 0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d</t>
             <t hangText="cofactor">4</t>
-            <t hangText="X(P)">3453974930397295163740086041505374102666552600751832902164069702816 \
-                45695073672344430481787759340633221708391583424041788924124567700732</t>
-            <t hangText="Y(P)">3634193621478034452746619039440022671768206803436590301407450995903 \
-                06164083365386343198191849338272965044442230921818680526749009182718</t>
+            <t hangText="X(P)">345397493039729516374008604150537410266655260075183290216406970281645695073672344430481787759340633221708391583424041788924124567700732</t>
+            <t hangText="Y(P)">363419362147803445274661903944002267176820680343659030140745099590306164083365386343198191849338272965044442230921818680526749009182718</t>
           </list>
         </t>
 
@@ -188,6 +184,8 @@
             <t hangText="d">-39081</t>
             <t hangText="order">2^446 - 0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d</t>
             <t hangText="cofactor">4</t>
+            <t hangText="X(P)">TODO</t>
+            <t hangText="Y(P)">TODO</t>
           </list>
         </t>
 
@@ -196,7 +194,8 @@
           <artwork align="left"><![CDATA[
   (u, v) = (x^2/y^2, (2 - x^2 - y^2)*x/y^3)
   (x, y) = (4*v*(u^2 - 1)/(u^4 - 2*u^2 + 4*v^2 + 1),
-            (u^5 - 2*u^3 - 4*u*v^2 + u)/(u^5 - 2*u^2*v^2 - 2*u^3 - 2*v^2 + u))]]></artwork>
+            (u^5 - 2*u^3 - 4*u*v^2 + u)/
+            (u^5 - 2*u^2*v^2 - 2*u^3 - 2*v^2 + u))]]></artwork>
         </figure>
       </section>
     </section>
@@ -217,7 +216,7 @@ def decodeLittleEndian(b, bits):
 
 def decodeUCoordinate(u, bits):
     u_list = [ord(b) for b in u]
-    # Ignore any unused bits
+    # Ignore any unused bits.
     if bits % 8:
         u_list[-1] &= (1<<(bits%8))-1
     return decodeLittleEndian(u_list, bits)
@@ -313,22 +312,26 @@ curve25519:
 Input scalar:
   a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4
 Input scalar as a number (base 10):
-  31029842492115040904895560451863089656472772604678260265531221036453811406496
+  31029842492115040904895560451863089656
+  472772604678260265531221036453811406496
 Input U-coordinate:
   e6db6867583030db3594c1a424b15f7c726624ec26b3353b10a903a6d0ab1c4c
 Input U-coordinate as a number:
-  34426434033919594451155107781188821651316167215306631574996226621102155684838
+  34426434033919594451155107781188821651
+  316167215306631574996226621102155684838
 Output U-coordinate:
   c3da55379de9c6908e94ea4df28d084f32eccf03491c71f754b4075577a28552
 
 Input scalar:
   4b66e9d4d1b4673c5ad22691957d6af5c11b6421e0ea01d42ca4169e7918ba0d
 Input scalar as a number (base 10):
-  35156891815674817266734212754503633747128614016119564763269015315466259359304
+  35156891815674817266734212754503633747
+  128614016119564763269015315466259359304
 Input U-coordinate:
   e5210f12786811d3f4b7959d0538ae2c31dbe7106fc03c3efc4cd549c715a493
 Input U-coordinate as a number:
-  8883857351183929894090759386610649319417338800022198945255395922347792736741
+  88838573511839298940907593866106493194
+  17338800022198945255395922347792736741
 Output U-coordinate:
   95cbde9476e8907d7aade45cb4b873f88b595a68799fa152e6f8f7647aac7957
 
@@ -418,7 +421,7 @@ After 1,000,000 iterations:
 
         <t>Using their generated values and the received input, Alice computes curve25519(f, K_B) and Bob computes curve25519(g, K_A).</t>
 
-        <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Both MUST check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function, such as hashing K, to compute a key.</t>
+        <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Both MUST check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function that includes K, K_A and K_B to derive a key.</t>
 
         <t>The check for the all-zero value results from the fact that the curve25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. This check is cheap and so MUST always be carried out. The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
 
@@ -504,8 +507,10 @@ def findCurve(prime, curveCofactor, twistCofactor):
         order = E.order()
         twistOrder = 2*(prime+1)-order
 
-        if (order % curveCofactor == 0 and is_prime(order // curveCofactor) and
-            twistOrder % twistCofactor == 0 and is_prime(twistOrder // twistCofactor)):
+        if (order % curveCofactor == 0 and
+            is_prime(order // curveCofactor) and
+            twistOrder % twistCofactor == 0 and
+            is_prime(twistOrder // twistCofactor)):
             return A
 
 def find1Mod4(prime):
