@@ -184,19 +184,21 @@
             <t hangText="d">-39081</t>
             <t hangText="order">2^446 - 0x8335dc163bb124b65129c96fde933d8d723a70aadc873d6d54a7bb0d</t>
             <t hangText="cofactor">4</t>
-            <t hangText="X(P)">TODO</t>
-            <t hangText="Y(P)">TODO</t>
+            <t hangText="X(P)">224580040295924300187604334099896036246789641632564134246125461686950415467406032909029192869357953282578032075146446173674602635247710</t>
+            <t hangText="Y(P)">298819210078481492676017930443930673437544040154080242095928241372331506189835876003536878655418784733982303233503462500531545062832660</t>
           </list>
         </t>
 
         <t>The 4-isogeny maps between the Montgomery curve this the Edward's curve are:</t>
         <figure align="center">
           <artwork align="left"><![CDATA[
-  (u, v) = (x^2/y^2, (2 - x^2 - y^2)*x/y^3)
+  (u, v) = (y^2/x^2, -(2 - x^2 - y^2)*y/x^3)
   (x, y) = (4*v*(u^2 - 1)/(u^4 - 2*u^2 + 4*v^2 + 1),
             (u^5 - 2*u^3 - 4*u*v^2 + u)/
             (u^5 - 2*u^2*v^2 - 2*u^3 - 2*v^2 + u))]]></artwork>
         </figure>
+
+        <t>The curve <spanx style="verb">edwards448</spanx> defined here is also called "Goldilocks" and is equal to the one defined in <xref target="goldilocks"/>.</t>
       </section>
     </section>
 
@@ -480,9 +482,9 @@ Their shared secret, K:
       <t>For each curve at a specific security level:</t>
       <t>
         <list style="numbers">
-          <t>The trace of Frobenius MUST NOT be in {0, 1} in order to rule out the attacks described in <xref target="Smart" />, <xref target="AS" />, and <xref target="S" />, as in <xref target="EBP" />.</t>
-          <t>MOV Degree: the embedding degree k MUST be greater than (r - 1) / 100, as in <xref target="EBP" />.</t>
-          <t>CM Discriminant: discriminant D MUST be greater than 2^100, as in <xref target="SC" />.</t>
+          <t>The trace of Frobenius MUST NOT be in {0, 1} in order to rule out the attacks described in <xref target="smart" />, <xref target="satoh" />, and <xref target="semaev" />, as in <xref target="brainpool" />.</t>
+          <t>MOV Degree: the embedding degree k MUST be greater than (r - 1) / 100, as in <xref target="brainpool" />.</t>
+          <t>CM Discriminant: discriminant D MUST be greater than 2^100, as in <xref target="safecurves" />.</t>
        </list>
       </t>
 
@@ -575,7 +577,7 @@ def findBasepoint(prime, A):
     <references title="Informative References">
       <!-- A reference written by by an organization not a person. -->
 
-      <reference anchor="Smart">
+      <reference anchor="smart">
         <front>
           <title>The discrete logarithm problem on elliptic curves of trace one</title>
           <author fullname="Nigel Smart" initials="N.S." surname="Smart" />
@@ -583,7 +585,7 @@ def findBasepoint(prime, A):
         </front>
       </reference>
 
-      <reference anchor="AS">
+      <reference anchor="satoh">
         <front>
           <title>Fermat quotients and the polynomial time discrete log algorithm for anomalous elliptic curves</title>
           <author fullname="Takakazu Satoh" initials="T.S." surname="Satoh" />
@@ -592,7 +594,7 @@ def findBasepoint(prime, A):
         </front>
       </reference>
 
-      <reference anchor="S">
+      <reference anchor="semaev">
         <front>
           <title>Evaluation of discrete logarithms on some elliptic curves</title>
           <author fullname="Igor Semaev" initials="I.S." surname="Semaev" />
@@ -600,7 +602,7 @@ def findBasepoint(prime, A):
         </front>
       </reference>
 
-      <reference anchor="EBP" target="http://www.ecc-brainpool.org/download/Domain-parameters.pdf">
+      <reference anchor="brainpool" target="http://www.ecc-brainpool.org/download/Domain-parameters.pdf">
         <front>
           <title>ECC Brainpool Standard Curves and Curve Generation</title>
           <author>
@@ -610,7 +612,7 @@ def findBasepoint(prime, A):
         </front>
       </reference>
 
-      <reference anchor="SC"
+      <reference anchor="safecurves"
                  target="http://safecurves.cr.yp.to/">
         <front>
           <title>SafeCurves: choosing safe curves for elliptic-curve cryptography</title>
@@ -671,6 +673,14 @@ def findBasepoint(prime, A):
           <author fullname="Peter Schwabe" initials="P." surname="Schwabe"/>
           <author fullname="Bo-Yin Yang" initials="B.Y." surname="Yang"/>
           <date year="2011"/>
+        </front>
+      </reference>
+
+      <reference anchor="goldilocks" target="http://eprint.iacr.org/2015/625.pdf">
+        <front>
+          <title>Ed448-Goldilocks, a new elliptic curve</title>
+          <author fullname="Mike Hamburg" initials="M." surname="Hamburg"/>
+          <date year="2015"/>
         </front>
       </reference>
     </references>
