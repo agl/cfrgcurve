@@ -10,7 +10,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="info" docName="draft-irtf-cfrg-curves-03" ipr="trust200902">
+<rfc category="info" docName="draft-irtf-cfrg-curves-04" ipr="trust200902">
   <front>
     <title abbrev="cfrgcurve">Elliptic Curves for Security</title>
 
