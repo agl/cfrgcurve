@@ -10,7 +10,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="info" docName="draft-irtf-cfrg-curves-04" ipr="trust200902">
+<rfc category="info" docName="draft-irtf-cfrg-curves-05" ipr="trust200902">
   <front>
     <title abbrev="cfrgcurve">Elliptic Curves for Security</title>
 
@@ -75,7 +75,7 @@
     <section title="Introduction">
       <t>Since the initial standardization of elliptic curve cryptography (ECC) in <xref target="SEC1"/> there has been significant progress related to both efficiency and security of curves and implementations. Notable examples are algorithms protected against certain side-channel attacks, various 'special' prime shapes that allow faster modular arithmetic, and a larger set of curve models from which to choose. There is also concern in the community regarding the generation and potential weaknesses of the curves defined by NIST <xref target="NIST"/>.</t>
 
-      <t>This memo specifies two elliptic curves (curve25519 and curve448) that support constant-time, exception-free scalar multiplication that is resistant to a wide range of side-channel attacks, including timing and cache attacks. These curves are of the form that supports the fastest (currently known) complete formulas for the elliptic-curve group operations, specifically the Edwards curve x^2 + y^2 = 1 + dx^2y^2 for primes p when p = 3 mod 4, and the twisted Edwards curve -x^2 + y^2 = 1 + dx^2y^2 when p = 1 mod 4.</t>
+      <t>This memo specifies two elliptic curves (curve25519 and curve448) that support constant-time, exception-free scalar multiplication that is resistant to a wide range of side-channel attacks, including timing and cache attacks. They are Montgomery curves (where y^2 = x^3 + Ax^2 + x) and thus have birationally equivalent Edwards versions. Edwards curves support the fastest (currently known) complete formulas for the elliptic-curve group operations, specifically the Edwards curve x^2 + y^2 = 1 + dx^2y^2 for primes p when p = 3 mod 4, and the twisted Edwards curve -x^2 + y^2 = 1 + dx^2y^2 when p = 1 mod 4. The maps to/from the Montgomery curves to their (twisted) Edwards equivalents are also given.</t>
     </section>
 
     <section title="Requirements Language">
@@ -118,7 +118,7 @@
 
         <t>The base point is u = 9, v = 14781619447589544791020593568409986887264606134616475288964881837755586237401.</t>
 
-        <t>This curve is isomorphic to a twisted Edwards curve -x^2 + y^2 = 1 + d*x^2*y^2, called <spanx style="verb">edwards25519</spanx>, where:</t>
+        <t>This curve is birationally equivalent to a twisted Edwards curve -x^2 + y^2 = 1 + d*x^2*y^2, called <spanx style="verb">edwards25519</spanx>, where:</t>
 
         <t>
           <list style="hanging">
@@ -131,14 +131,14 @@
           </list>
         </t>
 
-        <t>The isomorphism maps are:</t>
+        <t>The birational maps are:</t>
         <figure align="center">
           <artwork align="left"><![CDATA[
   (u, v) = ((1+y)/(1-y), sqrt(-486664)*u/x)
   (x, y) = (sqrt(-486664)*u/v, (u-1)/(u+1)]]></artwork>
         </figure>
 
-        <t>The Montgomery curve defined here is equal to the one defined in <xref target="curve25519"/> and the isomorphic twisted Edwards curve is equal to the one defined in <xref target="ed25519"/>.</t>
+        <t>The Montgomery curve defined here is equal to the one defined in <xref target="curve25519"/> and the equivalent twisted Edwards curve is equal to the one defined in <xref target="ed25519"/>.</t>
 
         </section>
         <section anchor="curve448curve" title="Curve448">
@@ -156,7 +156,7 @@
         <t>The base point is u = 5, v =
           355293926785568175264127502063783334808976399387714271831880898435169088786967410002932673765864550910142774147268105838985595290606362.</t>
 
-        <t>This curve is isomorphic to the Edwards curve x^2 + y^2 = 1 + d*x^2*y^2 where:</t>
+        <t>This curve is birationally equivalent to the Edwards curve x^2 + y^2 = 1 + d*x^2*y^2 where:</t>
 
         <t>
           <list style="hanging">
@@ -169,14 +169,14 @@
           </list>
         </t>
 
-        <t>The isomorphism maps are:</t>
+        <t>The birational maps are:</t>
         <figure align="center">
           <artwork align="left"><![CDATA[
   (u, v) = ((y-1)/(y+1), sqrt(156324)*u/x)
   (x, y) = (sqrt(156324)*u/v, (1+u)/(1-u)]]></artwork>
         </figure>
 
-        <t>That curve is also 4-isogenous to the following Edward's curve x^2 + y^2 = 1 + d*x^2*y^2, called <spanx style="verb">edwards448</spanx>, where:</t>
+        <t>Both of those curves are also 4-isogenous to the following Edwards curve x^2 + y^2 = 1 + d*x^2*y^2, called <spanx style="verb">edwards448</spanx>, where:</t>
 
         <t>
           <list style="hanging">
@@ -189,7 +189,7 @@
           </list>
         </t>
 
-        <t>The 4-isogeny maps between the Montgomery curve this the Edward's curve are:</t>
+        <t>The 4-isogeny maps between the Montgomery curve this the Edwards curve are:</t>
         <figure align="center">
           <artwork align="left"><![CDATA[
   (u, v) = (y^2/x^2, -(2 - x^2 - y^2)*y/x^3)
@@ -202,14 +202,14 @@
       </section>
     </section>
 
-    <section title="The curve25519 and curve448 functions">
-      <t>The <spanx style="verb">curve25519</spanx> and <spanx style="verb">curve448</spanx> functions perform scalar multiplication on the Montgomery form of the above curves. (This is used when implementing Diffie-Hellman.) The functions take a scalar and a u-coordinate as inputs and produce a u-coordinate as output. Although the functions work internally with integers, the inputs and outputs are 32-byte or 56-byte strings and this specification defines their encoding.</t>
+    <section title="The X25519 and X448 functions">
+      <t>The <spanx style="verb">X25519</spanx> and <spanx style="verb">X448</spanx> functions perform scalar multiplication on the Montgomery form of the above curves. (This is used when implementing Diffie-Hellman.) The functions take a scalar and a u-coordinate as inputs and produce a u-coordinate as output. Although the functions work internally with integers, the inputs and outputs are 32-byte or 56-byte strings and this specification defines their encoding.</t>
 
-      <t>U-coordinates are elements of the underlying field GF(2^255-19) or GF(2^448-2^224-1) and are encoded as an array of bytes, u, in little-endian order such that u[0] + 256*u[1] + 256^2*u[2] + ... + 256^n*u[n] is congruent to the value modulo p and u[n] is minimal. When receiving such an array, implementations of curve25519 (but not curve448) MUST mask the most-significant bit in the final byte. This is done to preserve compatibility with point formats which reserve the sign bit for use in other protocols and to increase resistance to implementation fingerprinting.</t>
+      <t>U-coordinates are elements of the underlying field GF(2^255-19) or GF(2^448-2^224-1) and are encoded as an array of bytes, u, in little-endian order such that u[0] + 256*u[1] + 256^2*u[2] + ... + 256^n*u[n] is congruent to the value modulo p and u[n] is minimal. When receiving such an array, implementations of X25519 (but not X448) MUST mask the most-significant bit in the final byte. This is done to preserve compatibility with point formats which reserve the sign bit for use in other protocols and to increase resistance to implementation fingerprinting.</t>
 
-      <t>Implementations MUST accept non-canonical values and process them as if they had been reduced modulo the field prime. The non-canonical values are 2^255-19 through 2^255-1 for curve25519 and 2^448-2^224-1 through 2^448-1 for curve448.</t>
+      <t>Implementations MUST accept non-canonical values and process them as if they had been reduced modulo the field prime. The non-canonical values are 2^255-19 through 2^255-1 for X25519 and 2^448-2^224-1 through 2^448-1 for X448.</t>
 
-      <t>The following functions implement this in Python, although the Python code is not intended to be performant nor side-channel free. Here the "bits" parameter should be set to 255 for curve25519 and 448 for curve448:</t>
+      <t>The following functions implement this in Python, although the Python code is not intended to be performant nor side-channel free. Here the "bits" parameter should be set to 255 for X25519 and 448 for X448:</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
@@ -228,7 +228,7 @@ def encodeUCoordinate(u, bits):
     return ''.join([chr((u >> 8*i) & 0xff) for i in range((bits+7)/8)])]]></artwork>
       </figure>
 
-      <t>Scalars are assumed to be randomly generated bytes. For curve25519, in order to decode 32 random bytes as an integer scalar, set the three least significant bits of the first byte and the most significant bit of the last to zero, set the second most significant bit of the last byte to 1 and, finally, decode as little-endian. This means that resulting integer is of the form 2^254 + 8 * {0, 1, ..., 2^(251) - 1}. Likewise, for curve448, set the two least significant bits of the first byte to 0, and the most significant bit of the last byte to 1. This means that the resulting integer is of the form 2^447 + 4 * {0, 1, ..., 2^(445) - 1}.</t>
+      <t>Scalars are assumed to be randomly generated bytes. For X25519, in order to decode 32 random bytes as an integer scalar, set the three least significant bits of the first byte and the most significant bit of the last to zero, set the second most significant bit of the last byte to 1 and, finally, decode as little-endian. This means that resulting integer is of the form 2^254 + 8 * {0, 1, ..., 2^(251) - 1}. Likewise, for X448, set the two least significant bits of the first byte to 0, and the most significant bit of the last byte to 1. This means that the resulting integer is of the form 2^447 + 4 * {0, 1, ..., 2^(445) - 1}.</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
@@ -246,7 +246,7 @@ def decodeScalar448(k):
     return decodeLittleEndian(k_list, 448)]]></artwork>
       </figure>
 
-      <t>To implement the <spanx style="verb">curve25519(k, u)</spanx> and <spanx style="verb">curve448(k, u)</spanx> functions (where <spanx style="verb">k</spanx> is the scalar and <spanx style="verb">u</spanx> is the u-coordinate) first decode <spanx style="verb">k</spanx> and <spanx style="verb">u</spanx> and then perform the following procedure, which is taken from <xref target="curve25519"/> and based on formulas from <xref target="montgomery"/>. All calculations are performed in GF(p), i.e., they are performed modulo p. The constant a24 is (486662 - 2) / 4 = 121665 for curve25519 and (156326 - 2) / 4 = 39081 for curve448.</t>
+      <t>To implement the <spanx style="verb">X25519(k, u)</spanx> and <spanx style="verb">X448(k, u)</spanx> functions (where <spanx style="verb">k</spanx> is the scalar and <spanx style="verb">u</spanx> is the u-coordinate) first decode <spanx style="verb">k</spanx> and <spanx style="verb">u</spanx> and then perform the following procedure, which is taken from <xref target="curve25519"/> and based on formulas from <xref target="montgomery"/>. All calculations are performed in GF(p), i.e., they are performed modulo p. The constant a24 is (486662 - 2) / 4 = 121665 for curve25519/X25519 and (156326 - 2) / 4 = 39081 for curve448/X448.</t>
 
       <figure align="center">
         <artwork align="left"><![CDATA[
@@ -287,7 +287,7 @@ Return x_2 * (z_2^(p - 2))]]></artwork>
 
       <t>(Note that these formulas are slightly different from Montgomery's original paper. Implementations are free to use any correct formulas.)</t>
 
-      <t>Finally, encode the resulting value as 32 or 56 bytes in little-endian order. For curve25519, the unused, most-significant bit MUST be zero.</t>
+      <t>Finally, encode the resulting value as 32 or 56 bytes in little-endian order. For X25519, the unused, most-significant bit MUST be zero.</t>
 
       <t>When implementing this procedure, due to the existence of side-channels in commodity hardware, it is important that the pattern of memory accesses and jumps not depend on the values of any of the bits of <spanx style="verb">k</spanx>. It is also important that the arithmetic used not leak information about the integers modulo p (such as having b*c be distinguishable from c*c).</t>
 
@@ -309,7 +309,7 @@ cswap(swap, x_2, x_3):
 
         <figure align="center">
           <artwork align="left"><![CDATA[
-curve25519:
+X25519:
 
 Input scalar:
   a546e36bf0527c9d3b16154b82465edd62144c0ac1fc5a18506a2244ba449ac4
@@ -338,7 +338,7 @@ Output U-coordinate:
   95cbde9476e8907d7aade45cb4b873f88b595a68799fa152e6f8f7647aac7957
 
 
-curve448:
+X448:
 
 Input scalar:
   3d262fddf9ec8e88495266fea19a34d28882acef045104d0d1aae121
@@ -377,9 +377,9 @@ Output U-coordinate:
 
         <figure align="center">
           <artwork align="left"><![CDATA[
-For curve25519:
+For X25519:
   0900000000000000000000000000000000000000000000000000000000000000
-For curve448:
+For X448:
   05000000000000000000000000000000000000000000000000000000
   00000000000000000000000000000000000000000000000000000000]]></artwork>
         </figure>
@@ -388,7 +388,7 @@ For curve448:
 
         <figure align="center">
           <artwork align="left"><![CDATA[
-curve25519:
+X25519:
 
 After one iteration:
     422c8e7a6227d7bca1350b3e2bb7279f7897b87bb6854b783c60e80311ae3079
@@ -398,7 +398,7 @@ After 1,000,000 iterations:
     7c3911e0ab2586fd864497297e575e6f3bc601c0883c30df5f4dd2d24f665424
 
 
-curve448:
+X448:
 
 After one iteration:
     3f482c8a9f19b01e6c46ee9711d9dc14fd4bf67af30765c2ae2b846a
@@ -415,17 +415,17 @@ After 1,000,000 iterations:
 
     <section title="Diffie-Hellman">
       <section title="Curve25519">
-        <t>The <spanx style="verb">curve25519</spanx> function can be used in an elliptic-curve Diffie-Hellman (ECDH) protocol as follows:</t>
+        <t>The <spanx style="verb">X25519</spanx> function can be used in an elliptic-curve Diffie-Hellman (ECDH) protocol as follows:</t>
 
-        <t>Alice generates 32 random bytes in f[0] to f[31] and transmits K_A = curve25519(f, 9) to Bob, where 9 is the u-coordinate of the base point and is encoded as a byte with value 9, followed by 31 zero bytes.</t>
+        <t>Alice generates 32 random bytes in f[0] to f[31] and transmits K_A = X25519(f, 9) to Bob, where 9 is the u-coordinate of the base point and is encoded as a byte with value 9, followed by 31 zero bytes.</t>
 
-        <t>Bob similarly generates 32 random bytes in g[0] to g[31] and computes K_B = curve25519(g, 9) and transmits it to Alice.</t>
+        <t>Bob similarly generates 32 random bytes in g[0] to g[31] and computes K_B = X25519(g, 9) and transmits it to Alice.</t>
 
-        <t>Using their generated values and the received input, Alice computes curve25519(f, K_B) and Bob computes curve25519(g, K_A).</t>
+        <t>Using their generated values and the received input, Alice computes X25519(f, K_B) and Bob computes X25519(g, K_A).</t>
 
-        <t>Both now share K = curve25519(f, curve25519(g, 9)) = curve25519(g, curve25519(f, 9)) as a shared secret. Both MUST check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function that includes K, K_A and K_B to derive a key.</t>
+        <t>Both now share K = X25519(f, X25519(g, 9)) = X25519(g, X25519(f, 9)) as a shared secret. Both MUST check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function that includes K, K_A and K_B to derive a key.</t>
 
-        <t>The check for the all-zero value results from the fact that the curve25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. This check is cheap and so MUST always be carried out. The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
+        <t>The check for the all-zero value results from the fact that the X25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. This check is cheap and so MUST always be carried out. The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
 
         <t>Test vector:</t>
 
@@ -433,11 +433,11 @@ After 1,000,000 iterations:
           <artwork align="left"><![CDATA[
 Alice's private key, f:
   77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a
-Alice's public key, curve25519(f, 9):
+Alice's public key, X25519(f, 9):
   8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a
 Bob's private key, g:
   5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb
-Bob's public key, curve25519(g, 9):
+Bob's public key, X25519(g, 9):
   de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f
 Their shared secret, K:
   4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742]]></artwork>
@@ -445,11 +445,11 @@ Their shared secret, K:
       </section>
 
       <section title="Curve448">
-        <t>The <spanx style="verb">curve448</spanx> function can be used very much like <spanx style="verb">curve22519</spanx> function in an ECDH protocol.</t>
+        <t>The <spanx style="verb">X448</spanx> function can be used in an ECDH protocol very much like the <spanx style="verb">X22519</spanx> function.</t>
 
-        <t>If <spanx style="verb">curve448</spanx> is to be used the only differences are that Alice and Bob generate 56 random bytes (not 32) and calculate K_A = curve448(f, 5) or K_B = curve448(g, 5) where 5 is the u-coordinate of the base point and is encoded as a byte with value 5, followed by 55 zero bytes.</t>
+        <t>If <spanx style="verb">X448</spanx> is to be used, the only differences are that Alice and Bob generate 56 random bytes (not 32) and calculate K_A = X448(f, 5) or K_B = X448(g, 5) where 5 is the u-coordinate of the base point and is encoded as a byte with value 5, followed by 55 zero bytes.</t>
 
-        <t>The test for the all-zeros result is still required.</t>
+        <t>As with <spanx style="verb">X25519</spanx>, both sides MUST check, without leaking extra information about the value of K, whether the resulting shared K is the all-zero value and abort if so.</t>
 
         <t>Test vector:</t>
 
@@ -458,13 +458,13 @@ Their shared secret, K:
 Alice's private key, f:
   9a8f4925d1519f5775cf46b04b5800d4ee9ee8bae8bc5565d498c28d
   d9c9baf574a9419744897391006382a6f127ab1d9ac2d8c0a598726b
-Alice's public key, curve448(f, 5):
+Alice's public key, X448(f, 5):
   9b08f7cc31b7e3e67d22d5aea121074a273bd2b83de09c63faa73d2c
   22c5d9bbc836647241d953d40c5b12da88120d53177f80e532c41fa0
 Bob's private key, g:
   1c306a7ac2a0e2e0990b294470cba339e6453772b075811d8fad0d1d
   6927c120bb5ee8972b0d3e21374c9c921b09d1b0366f10b65173992d
-Bob's public key, curve448(g, 5):
+Bob's public key, X448(g, 5):
   3eb7a829b0cd20f5bcfc0b599b6feccf6da4627107bdb0d4f345b430
   27d8b972fc3e34fb4232a13ca706dcb57aec3dae07bdc1c67bf33609
 Their shared secret, K:
@@ -482,9 +482,9 @@ Their shared secret, K:
       <t>For each curve at a specific security level:</t>
       <t>
         <list style="numbers">
-          <t>The trace of Frobenius MUST NOT be in {0, 1} in order to rule out the attacks described in <xref target="smart" />, <xref target="satoh" />, and <xref target="semaev" />, as in <xref target="brainpool" />.</t>
-          <t>MOV Degree: the embedding degree k MUST be greater than (r - 1) / 100, as in <xref target="brainpool" />.</t>
-          <t>CM Discriminant: discriminant D MUST be greater than 2^100, as in <xref target="safecurves" />.</t>
+          <t>The trace of Frobenius MUST NOT be in {0, 1} in order to rule out the attacks described in <xref target="smart" />, <xref target="satoh" />, and <xref target="semaev" />, as in <xref target="brainpool"/> and <xref target="safecurves"/>.</t>
+          <t>MOV Degree: the embedding degree k MUST be greater than (r - 1) / 100, as in <xref target="brainpool"/> and <xref target="safecurves"/>.</t>
+          <t>CM Discriminant: discriminant D MUST be greater than 2^100, as in <xref target="safecurves"/>.</t>
        </list>
       </t>
 
@@ -618,7 +618,7 @@ def findBasepoint(prime, A):
           <title>SafeCurves: choosing safe curves for elliptic-curve cryptography</title>
           <author fullname="Daniel J. Bernstein" initials="D.J.B." surname="Bernstein" />
           <author fullname="Tanja Lange" initials="T.J." surname="Lange" />
-          <date day="28" month="June" year="2014" />
+          <date day="13" month="Oct" year="2013" />
         </front>
       </reference>
 
