@@ -11,7 +11,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="info" docName="draft-irtf-cfrg-curves-08" ipr="trust200902">
+<rfc category="info" docName="draft-irtf-cfrg-curves-09" ipr="trust200902">
   <front>
     <title abbrev="cfrgcurve">Elliptic Curves for Security</title>
 
@@ -497,7 +497,7 @@ Their shared secret, K:
     <section title="Acknowledgements">
       <t>This document merges draft-black-rpgecc-01 and draft-turner-thecurve25519function-01. The following authors of those documents wrote much of the text and figures but are not listed as authors on this document: Benjamin Black, Joppe W. Bos, Craig Costello, Patrick Longa, Michael Naehrig and Watson Ladd.</t>
 
-      <t>The authors would also like to thank Tanja Lange, Rene Struik, Rich Salz, Ilari Liusvaara, Deirdre Connolly, Simon Josefsson, Stephan Farrell and Georg Nestmann for their reviews and contributions.</t>
+      <t>The authors would also like to thank Tanja Lange, Rene Struik, Rich Salz, Ilari Liusvaara, Deirdre Connolly, Simon Josefsson, Stephen Farrell and Georg Nestmann for their reviews and contributions.</t>
 
       <t>The X25519 function was developed by Daniel J. Bernstein in <xref target="curve25519"/>.</t>
     </section>
