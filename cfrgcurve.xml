@@ -431,7 +431,7 @@ After 1,000,000 iterations:
       </section>
     </section>
 
-    <section title="Diffie-Hellman">
+    <section title="Diffie-Hellman" anchor="dh">
       <section title="Curve25519">
         <t>The X25519 function can be used in an elliptic-curve Diffie-Hellman (ECDH) protocol as follows:</t>
 
@@ -441,9 +441,9 @@ After 1,000,000 iterations:
 
         <t>Using their generated values and the received input, Alice computes X25519(f, K_B) and Bob computes X25519(g, K_A).</t>
 
-        <t>Both now share K = X25519(f, X25519(g, 9)) = X25519(g, X25519(f, 9)) as a shared secret. Both MUST check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function that includes K, K_A and K_B to derive a key.</t>
+        <t>Both now share K = X25519(f, X25519(g, 9)) = X25519(g, X25519(f, 9)) as a shared secret. Both MAY check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function that includes K, K_A and K_B to derive a key.</t>
 
-        <t>The check for the all-zero value results from the fact that the X25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. This check is cheap and so MUST always be carried out. The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
+        <t>The check for the all-zero value results from the fact that the X25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. (See <xref target="seccon"/>.) The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
 
         <t>Test vector:</t>
 
@@ -467,7 +467,7 @@ Their shared secret, K:
 
         <t>If X448 is to be used, the only differences are that Alice and Bob generate 56 random bytes (not 32) and calculate K_A = X448(f, 5) or K_B = X448(g, 5) where 5 is the u-coordinate of the base point and is encoded as a byte with value 5, followed by 55 zero bytes.</t>
 
-        <t>As with X25519, both sides MUST check, without leaking extra information about the value of K, whether the resulting shared K is the all-zero value and abort if so.</t>
+        <t>As with X25519, both sides MAY check, without leaking extra information about the value of K, whether the resulting shared K is the all-zero value and abort if so.</t>
 
         <t>Test vector:</t>
 
@@ -492,10 +492,16 @@ Their shared secret, K:
       </section>
     </section>
 
-    <section title="Security Considerations">
+    <section title="Security Considerations" anchor="seccon">
       <t>The security level (i.e. the number of "operations" needed for a brute-force attack on a primitive) of curve25519 is slightly under the standard 128-bit level. This is acceptable because the standard security levels are primarily driven by much simplier, symmetric primitives where the security level naturally falls on a power of two. For asymmetric primitives, rigidly adhering to a power-of-two security level would require compromises in other parts of the design, which we reject. Additionally, comparing security levels between types of primitives can be misleading under common threat models where multiple targets can be attacked concurrently <xref target="bruteforce"/>.</t>
 
       <t>The ~224-bit security level of curve448 is a trade-off between performance and paranoia. Large quantum computers, if ever created, will break both curve25519 and curve448, and reasonable projections of the abilities of classical computers conclude that curve25519 is perfectly safe. However, some designs have relaxed performance requirements and wish to hedge against some amount of analytical advance against elliptic curves and thus curve448 is also provided.</t>
+
+      <t>Protocol designers using Diffie-Hellman over the curves defined in this document must not assume "contributory behaviour". Specially, contributory behaviour means that both parties' private keys contribute to the resulting shared key. Since curve25519 and curve448 have cofactors of 8 and 4 (respectively), an input point of small order will eliminate any contribution from the other party's private key. This situation can be detected by checking for the all-zero output, which implementations MAY do, as specified in <xref target="dh"/>. However, a large number of existing implementations do not do this.</t>
+
+      <t>Designers using these curves should be aware that for each public key, there are several publicly-computable public keys which are equivalent to it, i.e. they produce the same shared secrets. Thus using a public-key as an identifier and knowledge of a shared-secret as proof-of-ownership (without including the public keys in the key derivation) might lead to subtle vulnerabilities.</t>
+
+      <t>Designers should also be aware that implementations of these curves might not use the Montgomery ladder as specified in this document, but could use generic elliptic-curve libraries instead. These implementations could reject points on the twist and could reject non-minimal field elements. While not recommended, such implementations will interoperate with the Montgomery ladder specified here but are trivially distinguishable from it. Designs that have privacy concerns should be aware of this potential distinguisher.</t>
     </section>
 
     <section title="IANA Considerations">
@@ -505,7 +511,7 @@ Their shared secret, K:
     <section title="Acknowledgements">
       <t>This document merges draft-black-rpgecc-01 and draft-turner-thecurve25519function-01. The following authors of those documents wrote much of the text and figures but are not listed as authors on this document: Benjamin Black, Joppe W. Bos, Craig Costello, Patrick Longa, Michael Naehrig and Watson Ladd.</t>
 
-      <t>The authors would also like to thank Tanja Lange, Rene Struik, Rich Salz, Ilari Liusvaara, Deirdre Connolly, Simon Josefsson, Stephen Farrell and Georg Nestmann for their reviews and contributions.</t>
+      <t>The authors would also like to thank Tanja Lange, Rene Struik, Rich Salz, Ilari Liusvaara, Deirdre Connolly, Simon Josefsson, Stephen Farrell, Georg Nestmann and Trevor Perrin for their reviews and contributions.</t>
 
       <t>The X25519 function was developed by Daniel J. Bernstein in <xref target="curve25519"/>.</t>
     </section>
