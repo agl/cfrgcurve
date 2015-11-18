@@ -443,7 +443,7 @@ After 1,000,000 iterations:
 
         <t>Both now share K = X25519(f, X25519(g, 9)) = X25519(g, X25519(f, 9)) as a shared secret. Both MAY check, without leaking extra information about the value of K, whether K is the all-zero value and abort if so (see below). Alice and Bob can then use a key-derivation function that includes K, K_A and K_B to derive a key.</t>
 
-        <t>The check for the all-zero value results from the fact that the X25519 function produces that value if it operates on an input corresponding to a point with order dividing the co-factor, h, of the curve. (See <xref target="seccon"/>.) The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
+        <t>The check for the all-zero value results from the fact that the X25519 function produces that value if it operates on an input corresponding to a point with small order, where the order divides the co-factor, h, of the curve. (See <xref target="seccon"/>.) The check may be performed by ORing all the bytes together and checking whether the result is zero as this eliminates standard side-channels in software implementations.</t>
 
         <t>Test vector:</t>
 
